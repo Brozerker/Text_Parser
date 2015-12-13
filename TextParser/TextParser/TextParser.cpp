@@ -2,30 +2,52 @@
 //
 
 #include "stdafx.h"
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iostream>
-using namespace std;
+#include "counter.h"
+
+string formatString(string in, string list);
+string removeAt(string in, int at);
+void toLowerCase(string & input);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	string whiteList = "abcdefghijklmnopqrstuvwxyz.?!";
 	ifstream file;
-	file.open("text.txt");
-	vector<string> vector;
+	file.open("smallText.txt");
+	vector<string> wordList;
 	while (file) {
 		string temp;
 		file >> temp;
-		cout << temp << endl;
-		vector.push_back(temp);
+		//cout << temp << endl;
+		wordList.push_back(formatString(temp, whiteList));
 	}
-	cout << "vector is " << vector.size() << " words long";
+	Counter counter(wordList);
+	counter.count();
+	counter.outputResults();
+	cout << "Enter a sentence without spaces or capitilization. \nFor instance \"This is a sentence\" becomes \"thisisasentence\"" << endl;
+	string toParse = "";
+	getline(cin, toParse);
+	counter.parse(toParse);
+	cout << toParse << endl;
+	system("Pause");
 	return 0;
 }
 
-void toLowerCase(string * input) {
-	for (int i = 0; i < input->size(); ++i) {
-		input[i] = tolower(input->at(i));
+string formatString(string in, string list) {	
+	string out;
+	toLowerCase(in);
+	for (int i = 0; i < in.length(); ++i) {
+		for (int k = 0; k < list.length(); ++k) {
+			if (in[i] == list[k]) {
+				out.push_back(in[i]);
+			}
+		}
+	}
+	return out;
+}
+
+void toLowerCase(string & input) {
+	for (int i = 0; i < input.length(); ++i) {
+		input[i] = tolower(input[i]);
 	}
 }
 
